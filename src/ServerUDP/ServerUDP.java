@@ -14,23 +14,19 @@ public class ServerUDP {
 
         try (DatagramSocket datagramSocket = new DatagramSocket()
         ) {
-            byte[] data = new byte[1024];
+            byte[] data;
             DatagramPacket datagramPacket;
 
+            //noinspection InfiniteLoopStatement
             while (true) {
+
                 data = TIME.format(Calendar.getInstance().getTime()).getBytes();
-                datagramPacket = new DatagramPacket(data, data.length, InetAddress.getByName("238.1.1.1"), 8040);
+                datagramPacket = new DatagramPacket(data, data.length, InetAddress.getByName("255.255.255.255"), 8040);
                 datagramSocket.send(datagramPacket);
                 System.out.println("Данные отправленны успешно");
                 Thread.sleep(1000);
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }

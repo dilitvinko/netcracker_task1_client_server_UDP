@@ -8,24 +8,24 @@ public class ClientUDP2 {
     public static void main(String[] args) {
         System.out.println("Receive data...");
         try {
-            acceptFile(8040, InetAddress.getByName("238.1.1.1"), 1024);
+            acceptFile(InetAddress.getByName("238.1.1.1"));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
     }
 
-    private static void acceptFile(int port, InetAddress address , int pacSize) {
-        byte data[] = new byte[pacSize];
+    private static void acceptFile(InetAddress address) {
+        byte[] data = new byte[1024];
         DatagramPacket datagramPacket = new DatagramPacket(data, data.length);
-        try (MulticastSocket multicastSocket = new MulticastSocket(port)
+        try (MulticastSocket multicastSocket = new MulticastSocket(8040)
         ) {
             multicastSocket.joinGroup(address);
 
-            /* установка времени ожидания: если в течение 60 секунд
-            не принято ни одного пакета, прием данных заканчивается */
+
             multicastSocket.setSoTimeout(60_000);
 
+            //noinspection InfiniteLoopStatement
             while (true) {
                 multicastSocket.receive(datagramPacket);
                 System.out.println("(2) Time from ServerUDP.ServerUDP: " + new String(data));
@@ -34,8 +34,6 @@ public class ClientUDP2 {
         } catch (SocketTimeoutException e) {
             // если время ожидания вышло
             System.err.println("Истекло время ожидания, прием данных закончен");
-        } catch (SocketException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
